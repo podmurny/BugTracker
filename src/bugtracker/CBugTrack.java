@@ -19,15 +19,19 @@ public class CBugTrack
 
     java.sql.Connection connection = null;
     java.sql.Statement statement;
-    java.sql.ResultSet result_projects;
-    java.sql.ResultSet result_tasks;
-    java.sql.ResultSet result_bugs;
+    public java.sql.ResultSet result_projects = null;
+    public java.sql.ResultSet result_tasks = null;
+    public java.sql.ResultSet result_bugs = null;
+    public java.sql.ResultSet result_profiles = null;
     static String host = null;
     static String port = null;
     static String login = null;
     static String password = null;
     static boolean default_port = true;
-    private int access_level = 0; //TODO
+    public String data_from_server[][][];
+    int projects_count = 0;
+    int tasks_count = 0;
+    int bugs_count = 0;
     // about access_level //
     // 0 - guest          //
     // 1 - tester         //
@@ -53,32 +57,37 @@ public class CBugTrack
         return 0;
     }
     
-    //Open forms: Add Project, Add Task, Add Bug
-    //types: "Project", "Task", "Bug"
-//    public int open_add_form(String type)
-//    {
-//        String name,info;//Variables that we will write to database
-//        //TODO
-//        //here we must add open form event
-//        //and fill our variables
-//        return 0;
-//    }
-    //Open form that add user
-//    public int open_add_user()
-//    {
-//        String login, password;//variables that
-//        int user_access_level;//we will write to database
-//        //TODO
-//        //Just open add user form and after click "Add" button
-//        //read and send data to database
-//        return 0;
-//    }
-    //public int add_user(String )
+    int get_all_userlist(String user, String password, int privileges)
+    {
+        try
+        {
+            statement = connection.createStatement();
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try
+        {
+            statement.executeQuery("SELECT login, password, role FROM User");
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try
+        {
+            result_profiles = statement.getResultSet();
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
     
     public int get_all_project_info()
     {
         try
         {
+            statement = null;
             statement = connection.createStatement();
         } catch (SQLException ex)
         {
@@ -94,46 +103,43 @@ public class CBugTrack
         try
         {
             result_projects = statement.getResultSet();
+            projects_count = result_projects.getFetchSize();
+            
         } catch (SQLException ex)
         {
             Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
-        int i = 0;
         try {
-            statement.executeQuery("SELECT ProjectName, Task, TaskInfo, Priority, Status, Username FROM Task");
+            statement.executeQuery("SELECT ProjectName, TaskName, TaskInfo, Priority, Status, Username FROM Task");
         } catch (SQLException ex) {
             Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             result_tasks = statement.getResultSet();
+            tasks_count = result_tasks.getFetchSize();
         } catch (SQLException ex) {
             Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
-        i = 0;
         try {
-            statement.executeQuery("SELECT ProjectName, Bug, BugInfo, Priority, Status, Username FROM Bugreports");
+            statement.executeQuery("SELECT ProjectName, BugName, BugInfo, Priority, Status, Username FROM Bug");
         } catch (SQLException ex) {
             Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             result_bugs = statement.getResultSet();
+            bugs_count = result_bugs.getFetchSize();
         } catch (SQLException ex) {
             Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
-        i = 0;
-        return 0;
-    }
-    
-    //get all information from xml
-    int read_xml()
-    {
+        try {
+            
+            while (result_projects.next()) {
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CBugTrack.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return 0;
     }
 
-    //set all information to xml
-    int write_xml()
-    {
-        return 0;
-        //test add
-    }
 }
